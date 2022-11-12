@@ -26,7 +26,7 @@ namespace VaultSharp.V1.SecretsEngines.PKI
 
             return result;
         }
-        
+
         public async Task<Secret<SignedCertificateData>> SignCertificateAsync(string pkiRoleName, SignCertificatesRequestOptions signCertificatesRequestOptions, string pkiBackendMountPoint = null, string wrapTimeToLive = null)
         {
             Checker.NotNull(pkiRoleName, "pkiRoleName");
@@ -77,7 +77,7 @@ namespace VaultSharp.V1.SecretsEngines.PKI
                 : CertificateFormat.der;
 
             var result = await _polymath.MakeVaultApiRequest<string>(pkiBackendMountPoint ?? _polymath.VaultClientSettings.SecretsEngineMountPoints.PKI, "/ca" + format, HttpMethod.Get, rawResponse: true).ConfigureAwait(_polymath.VaultClientSettings.ContinueAsyncTasksOnCapturedContext);
-            
+
             return new RawCertificateData
             {
                 CertificateContent = result,
@@ -106,7 +106,7 @@ namespace VaultSharp.V1.SecretsEngines.PKI
 
             return result;
         }
-        
+
         public async Task<Secret<CertificateData>> ReadDefaultIssuerCertificateChainAsync(CertificateFormat certificateFormat, string pkiBackendMountPoint = null)
         {
             if (certificateFormat != CertificateFormat.json
@@ -125,6 +125,20 @@ namespace VaultSharp.V1.SecretsEngines.PKI
 
             var certificateDataSecret = await _polymath.MakeVaultApiRequest<Secret<CertificateData>>(pkiBackendMountPoint ?? _polymath.VaultClientSettings.SecretsEngineMountPoints.PKI, path, HttpMethod.Get, unauthenticated: true).ConfigureAwait(_polymath.VaultClientSettings.ContinueAsyncTasksOnCapturedContext);
             return certificateDataSecret;
+        }
+
+        public async Task<Secret<IssuerKeys>> ListIssuersAsync(string pkiBackendMountPoint = null)
+        {
+            var result = await _polymath.MakeVaultApiRequest<Secret<IssuerKeys>>(pkiBackendMountPoint ?? _polymath.VaultClientSettings.SecretsEngineMountPoints.PKI, "/issuers?list=true", HttpMethod.Get, unauthenticated: true).ConfigureAwait(_polymath.VaultClientSettings.ContinueAsyncTasksOnCapturedContext);
+
+            return result;
+        }
+
+        public async Task<Secret<IssuerData>> ReadIssuerAsync(string issuerReference, string pkiBackendMountPoint = null)
+        {
+            var result = await _polymath.MakeVaultApiRequest<Secret<IssuerData>>(pkiBackendMountPoint ?? _polymath.VaultClientSettings.SecretsEngineMountPoints.PKI, $"/issuer/{issuerReference}", HttpMethod.Get).ConfigureAwait(_polymath.VaultClientSettings.ContinueAsyncTasksOnCapturedContext);
+
+            return result;
         }
     }
 }

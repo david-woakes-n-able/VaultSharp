@@ -59,7 +59,7 @@ namespace VaultSharp.V1.SecretsEngines.PKI
         Task<Secret<SignedCertificateData>> SignCertificateAsync(string pkiRoleName, SignCertificatesRequestOptions signCertificateRequestOptions, string pkiBackendMountPoint = null, string wrapTimeToLive = null);
 
         /// <summary>
-        /// This endpoint revokes a certificate using its serial number. 
+        /// This endpoint revokes a certificate using its serial number.
         /// This is an alternative option to the standard method of revoking using Vault lease IDs.
         /// A successful revocation will rotate the CRL.
         /// </summary>
@@ -76,7 +76,7 @@ namespace VaultSharp.V1.SecretsEngines.PKI
         Task<Secret<RevokeCertificateResponse>> RevokeCertificateAsync(string serialNumber, string pkiBackendMountPoint = null);
 
         /// <summary>
-        /// This endpoint allows tidying up the storage backend and/or CRL by removing certificates that have expired 
+        /// This endpoint allows tidying up the storage backend and/or CRL by removing certificates that have expired
         /// and are past a certain buffer period beyond their expiration time.
         /// </summary>
         /// <param name="certificateTidyRequest">The request object</param>
@@ -90,7 +90,7 @@ namespace VaultSharp.V1.SecretsEngines.PKI
         Task TidyAsync(CertificateTidyRequest certificateTidyRequest = null, string pkiBackendMountPoint = null);
 
         /// <summary>
-        /// This endpoint allows auto tidying up the storage backend and/or CRL by removing certificates that have expired 
+        /// This endpoint allows auto tidying up the storage backend and/or CRL by removing certificates that have expired
         /// and are past a certain buffer period beyond their expiration time.
         /// </summary>
         /// <param name="certificateAutoTidyRequest">The request object</param>
@@ -104,7 +104,7 @@ namespace VaultSharp.V1.SecretsEngines.PKI
         Task AutoTidyAsync(CertificateAutoTidyRequest certificateAutoTidyRequest = null, string pkiBackendMountPoint = null);
 
         /// <summary>
-        /// This is a read only endpoint that returns information about the current tidy operation, 
+        /// This is a read only endpoint that returns information about the current tidy operation,
         /// or the most recent if none are currently running.
         /// </summary>
         /// <param name="pkiBackendMountPoint"><para>[optional]</para>
@@ -115,9 +115,9 @@ namespace VaultSharp.V1.SecretsEngines.PKI
         Task<Secret<CertificateTidyStatus>> GetTidyStatusAsync(string pkiBackendMountPoint = null);
 
         /// <summary>
-        /// This endpoint allows cancelling a running tidy operation. 
-        /// It takes no parameter and cancels the tidy at the next available checkpoint, 
-        /// which may process additional certificates between when the operation was 
+        /// This endpoint allows cancelling a running tidy operation.
+        /// It takes no parameter and cancels the tidy at the next available checkpoint,
+        /// which may process additional certificates between when the operation was
         /// marked as cancelled and when the operation stopped.
         /// </summary>
         /// <param name="pkiBackendMountPoint"><para>[optional]</para>
@@ -128,8 +128,8 @@ namespace VaultSharp.V1.SecretsEngines.PKI
         Task<Secret<CertificateTidyStatus>> CancelTidyAsync(string pkiBackendMountPoint = null);
 
         /// <summary>
-        /// Retrieves the CA certificate in raw DER-encoded form. 
-        /// This is a bare endpoint that does not return a standard Vault data structure. 
+        /// Retrieves the CA certificate in raw DER-encoded form.
+        /// This is a bare endpoint that does not return a standard Vault data structure.
         /// The CA certificate can be returned in DER or PEM format.
         /// This is an unauthenticated endpoint.
         /// </summary>
@@ -180,14 +180,10 @@ namespace VaultSharp.V1.SecretsEngines.PKI
         /// Retrieves a list of all revoked certificate keys (serial numbers).
         /// </summary>
         /// <param name="pkiBackendMountPoint">
-        /// The mount point for the PKI backend. Defaults to <see cref="SecretsEngineMountPoints.PKI" />
-        /// Provide a value only if you have customized the PKI mount point.
-        /// </param>
-        /// <returns>
         /// The secret with the list of revoked certificate keys (serial numbers)
         /// </returns>
         Task<Secret<CertificateKeys>> ListRevokedCertificatesAsync(string pkiBackendMountPoint = null);
-        
+
         /// <summary>
         /// Retrieves the default issuer's CA certificate chain, including the default issuer.
         /// </summary>
@@ -200,5 +196,30 @@ namespace VaultSharp.V1.SecretsEngines.PKI
         /// The secret with the certificate chain data
         /// </returns>
         Task<Secret<CertificateData>> ReadDefaultIssuerCertificateChainAsync(CertificateFormat certificateFormat, string pkiBackendMountPoint = null);
+
+        /// <summary>
+        /// Retrieves the list of issuer keys.
+        /// </summary>
+        /// <param name="pkiBackendMountPoint">
+        /// The mount point for the PKI backend. Defaults to <see cref="SecretsEngineMountPoints.PKI" />
+        /// Provide a value only if you have customized the PKI mount point.
+        /// </param>
+        Task<Secret<IssuerKeys>> ListIssuersAsync(string pkiBackendMountPoint = null);
+
+        /// <summary>
+        /// Reads detailed data for an issuer.
+        /// This is an authenticated endpoint.
+        /// </summary>
+        /// <param name="issuerReference">
+        /// Issuer name or serial number of the certificate
+        /// </param>
+        /// <param name="pkiBackendMountPoint"><para>[optional]</para>
+        /// The mount point for the PKI backend. Defaults to <see cref="SecretsEngineMountPoints.PKI" />
+        /// Provide a value only if you have customized the PKI mount point.
+        /// </param>
+        /// <returns>
+        /// Detailed information about the issuer and includes certificate in PEM format
+        /// </returns>
+        Task<Secret<IssuerData>> ReadIssuerAsync(string issuerReference, string pkiBackendMountPoint = null);
     }
 }
